@@ -8,7 +8,7 @@ namespace Utilities
     /// <summary>
     /// This contains console loging. 
     /// </summary>
-    class Utilities
+    public class Utilities
     {
         public static void ConsoleLog(Object o)
         {
@@ -27,7 +27,8 @@ namespace Utilities
             string token = null; 
             try
             {
-                token = System.IO.File.ReadAllText(@"BotToken.text");
+               string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                token = System.IO.File.ReadAllText(path+@"\discordbottoken.txt");
             }
             catch (Exception e)
             {

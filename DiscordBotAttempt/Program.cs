@@ -58,7 +58,7 @@ namespace _02_commands_framework
                 // Tokens should be considered secret data and never hard-coded.
                 // We can read from the environment variable to avoid hardcoding.
                 await client.LoginAsync
-                    (TokenType.Bot, null
+                    (TokenType.Bot, Utilities.Utilities.GetBotToken()
                     );
 
                 await client.StartAsync();

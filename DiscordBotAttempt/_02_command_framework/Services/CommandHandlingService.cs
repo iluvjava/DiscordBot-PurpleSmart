@@ -40,15 +40,14 @@ namespace Services
         /// <summary>
         /// This is the method that reads all the rawmessage that presents at the discord 
         /// channels. 
-        /// 
+        /// <param>
         /// The method analyze the rawMessage and decide what to do, a pretty important method. 
+        /// </param>
         /// </summary>
         /// <param name="rawMessage"></param>
         /// <returns></returns>
         public async Task MessageReceivedAsync(SocketMessage rawMessage)
         {
-            Utilities.Utilities.ConsoleLog("MessageReceivedAsync Running...");
-            Utilities.Utilities.ConsoleLog(rawMessage);
 
             // Ignore system messages, or messages from other bots
             if (!(rawMessage is SocketUserMessage message)) return;
