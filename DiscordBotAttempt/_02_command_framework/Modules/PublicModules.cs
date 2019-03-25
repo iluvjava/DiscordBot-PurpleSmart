@@ -117,32 +117,11 @@ namespace Modules
         [Command("math")]
         public Task MathAsync(params string[] objects)
         {
-            string UserSpeaking = new MessageContextBridge(Context).NameOfUserSpeaking();
+            Console.WriteLine("MathAsync Triggered, Context Object: " + this.Context.ToString());
 
-            string formattedouput = "Hi! "+UserSpeaking+" Here is my take on this: \n";
+            ICommandHandles A_MathCommand = new TheMathCommand(new MessageContextBridge(this.Context , objects));
 
-            Interpretor[] replies = new Interpretor[objects.Length];
-
-            for(int i =0; i< objects.Length; i++)
-            {
-                replies[i] = new Interpretor(objects[i]);
-            }
-
-           
-
-            foreach (Interpretor itp in replies)
-            {
-                formattedouput +=
-                  itp.inputexpression
-                  +
-                  " = "
-                  +
-                  itp.outputresult
-                  +
-                  "\n";
-            }
-
-            return ReplyAsync(formattedouput);
+            return ReplyAsync(A_MathCommand.getReply());
         }
 
         /// <summary>

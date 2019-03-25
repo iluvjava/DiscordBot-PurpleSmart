@@ -17,12 +17,52 @@ namespace DiscordBotAttempt._02_command_framework.Modules
    {
         protected ICommandContext _subject;
 
-        protected ulong _botID; 
-        
+        protected ulong _botID;
 
-        public MessageContextBridge(ICommandContext arg)
-        { 
-            _subject = arg??throw new Exception("WTF are you doing? ");
+        protected string[] userInputs;
+
+        /// <summary>
+        /// In order to execute a command perfectly, 
+        /// we need the context of the command and what does the 
+        /// user said specifically. 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="Userinputs"></param>
+        public MessageContextBridge(ICommandContext commandcontext, string[] Userinputs = null)
+        {
+            this.userInputs= Userinputs;
+            _subject = commandcontext ?? throw new Exception("Null Command Context."); 
+        }
+
+
+        /// <summary>
+        /// In order to execute a command perfectly, 
+        /// we need the context of the command and what does the 
+        /// user said specifically, this case, it's a single inputs
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="Userinputs"></param>
+        public MessageContextBridge(ICommandContext arg, string userinput) :this(arg)
+        {
+            string[] temp = new string[1];
+            temp[1] = userinput;
+            this.userInputs = temp;
+        }
+
+
+        /// <summary>
+        /// This method return the string input by the user after command. 
+        /// So if this return null, then it means 
+        /// you don't need specific arguments for the command. 
+        /// </summary>
+        /// <returns>
+        /// String[] that it's input by the user,
+        /// null if the command doesn't need any arguments or the user 
+        /// has the incorrect input. 
+        /// </returns>
+        public string[] getUserInput()
+        {
+            return this.userInputs;
         }
 
 

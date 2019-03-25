@@ -10,9 +10,6 @@ using System.Threading.Tasks;
 namespace MathyStuff
 {
 
-
-    #region Interpretor
-
     /// <summary>
     /// 
     /// This calss should contain all the things we need to interpret algebric and return a message to the user 
@@ -22,6 +19,7 @@ namespace MathyStuff
     public class Interpretor
     {
 
+        #region fields
         public static readonly char[] OPERATORS={'+','-','*','/'};
         public static readonly IReadOnlyCollection<char> OPERATORSlist = new List<char>(OPERATORS);
         
@@ -30,10 +28,17 @@ namespace MathyStuff
         
         //public readonly String output;
         public readonly String outputresult; 
+
+        // If this is true, it means the output result is an string 
+        // that is the error message, default is true, because 
+        //There is more ways to go wrong than go correctly. 
+        protected bool  ErrorOccured =true;
+        #endregion
+        #region interpretor Constructor
         public Interpretor(String expression)
         {
             this.inputexpression = expression;
-            
+
             try //Try to compute and display result onto the console. 
             {
                 ExpressionDiegest ed = new ExpressionDiegest(inputexpression);
@@ -43,22 +48,49 @@ namespace MathyStuff
                 //Evaluate the post fix and out put. 
                 outputresult = evaluatePostFix(postfix).ToString();
                 Console.WriteLine(outputresult);
+
+                ErrorOccured = false; 
+            }
+            catch (System.DivideByZeroException ohshit)
+            {
+                this.outputresult = "Infinity caused by dividing by 0.";
+                Console.WriteLine();
             }
             catch (Exception e)
             {
                 if (e is ExpressionDiegestError)
                 {
                     ExpressionDiegestError ede = e as ExpressionDiegestError;
+                    this.outputresult = ede.getErrorComments();
                     Console.WriteLine(ede.getErrorComments());
                 }
                 else
                 {
+                    this.outputresult = "Some Unknow error Occured...";
+                    Console.WriteLine(e.ToString());
+                    Console.WriteLine(e.HelpLink);
+                    Console.WriteLine(e.Message);
                     Console.WriteLine(e.StackTrace.ToString());
                 }
-
             }
+
+
+        }
+        #endregion
+
+        /// <summary>
+        /// True then there is error and the output message will 
+        /// an string description of the errors instead
+        /// of the correct result. 
+        /// </summary>
+        /// <returns></returns>
+        public bool HasErrorOccured()
+        {
+            return this.ErrorOccured;
         }
 
+
+        #region static methods cluster
 
         //***************Below Are all Static Methods*************************************************
 
@@ -405,6 +437,8 @@ namespace MathyStuff
             return evalueteStacks(numberstack, optstack);
         }
 
+        #endregion
+
 
         /// <summary>
         /// <para>
@@ -415,11 +449,13 @@ namespace MathyStuff
         /// </summary>
         public class ExpressionDiegest
         {
+            #region ExpressionDiegest Fields
             protected String sourceexpression;
             protected String diagestedexpression;
             protected String[] splitedexpression ;
 
             protected IList<Object> castplistedexpression;
+            #endregion
 
             public ExpressionDiegest(String expression)
             {
@@ -437,6 +473,9 @@ namespace MathyStuff
             {
                 return castplistedexpression;
             }
+
+
+            #region validation methods cluster
 
             /// <summary>
             /// <para>
@@ -550,7 +589,10 @@ namespace MathyStuff
                 return true;
             }
 
+            #endregion
 
+
+            #region parsing and diegesting methods cluster
             /// <summary>
             /// 
             /// This method modify the current expression by adding space to left side and right side of the 
@@ -610,7 +652,8 @@ namespace MathyStuff
                 this.castplistedexpression = expression;
                 return true;
             }
-                                             
+            #endregion
+
             public override string ToString()
             {
                 String s = this.sourceexpression;
@@ -623,14 +666,7 @@ namespace MathyStuff
         }
                        
     }
-    #endregion
 
-
-
-    /// <summary>
-    /// This is a exception class dedicated to errors that ocurred when the computer is reading 
-    /// expression from the user. 
-    /// </summary>
     [Serializable]
     internal class ExpressionDiegestError : Exception
     {
