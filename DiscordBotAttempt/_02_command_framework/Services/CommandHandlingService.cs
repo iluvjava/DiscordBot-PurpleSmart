@@ -16,6 +16,15 @@ namespace Services
         private readonly DiscordSocketClient _discord;
         private readonly IServiceProvider _services;
 
+
+        /// <summary>
+        /// This method assemble all the components. 
+        /// This is where all the depedency injections
+        /// are working. 
+        /// </summary>
+        /// <param name="services">
+        /// 
+        /// </param>
         public CommandHandlingService(IServiceProvider services)
         {
             _commands = services.GetRequiredService<CommandService>();
@@ -24,6 +33,7 @@ namespace Services
 
             // Hook CommandExecuted to handle post-command-execution logic.
             _commands.CommandExecuted += CommandExecutedAsync;
+            
             // Hook MessageReceived so we can process each message to see
             // if it qualifies as a command.
             _discord.MessageReceived += MessageReceivedAsync;
@@ -42,6 +52,7 @@ namespace Services
         /// channels. 
         /// <param>
         /// The method analyze the rawMessage and decide what to do, a pretty important method. 
+        /// This is also the place when the bot first meet the context of the conversation. 
         /// </param>
         /// </summary>
         /// <param name="rawMessage"></param>
@@ -60,21 +71,38 @@ namespace Services
             // Perform prefix check. You may want to replace this with
             // (!message.HasCharPrefix('!', ref argPos))
             // for a more traditional command format like !help.
-            if (!message.HasCharPrefix('!', ref argPos)) return;
+            if (!message.HasStringPrefix("!", ref argPos)) return;
+
 
             var context = new SocketCommandContext(_discord, message);
-            
+
             // Perform the execution of the command. In this method,
             // the command service will perform precondition and parsing check
             // then execute the command if one is matched.
+
             await _commands.ExecuteAsync(context, argPos, _services);
             // Note that normally a result will be returned by this format, but here
             // we will handle the result in CommandExecutedAsync,
         }
 
+
+
+        /// <summary>
+        /// This method execute the command, and the parameters passed in are the context we can 
+        /// use to choose certain way we can execute the commands. 
+        /// </summary>
+        /// <param name="command">
+        /// 
+        /// </param>
+        /// <param name="context">
+        /// 
+        /// </param>
+        /// <param name="result"></param>
+        /// <returns></returns>
         public async Task CommandExecutedAsync
-            (Optional<CommandInfo> command, ICommandContext context, IResult result)
+        (Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
+
             // command is unspecified when there was a search failure (command not found); we don't care about these errors
             if (!command.IsSpecified)
                 return;

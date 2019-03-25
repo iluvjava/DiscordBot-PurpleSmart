@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using DiscordBotAttempt._02_command_framework.Modules;
 using MathyStuff;
 using Services;
 using Utilities;
@@ -21,6 +22,10 @@ namespace Modules
     /// The discord infrastrcture uses dependency injection, hence
     /// method attributes are serves important role when it uses 
     /// c sharp reflection. 
+    /// </para>
+    /// 
+    /// <para>
+    /// Please read ModlulesBass class to get more ideas about the context of this class. 
     /// </para>
     /// </summary>
     public class PublicModule : ModuleBase<SocketCommandContext>
@@ -49,7 +54,7 @@ namespace Modules
             await ReplyAsync(formattedreply);
         }
 
-        [Command("cat")]
+        //[Command("cat")]
         public async Task CatAsync()
         {
             // Get a stream containing an image of a cat
@@ -60,7 +65,7 @@ namespace Modules
         }
 
         // Get info on a user, or the user who invoked the command if one is not specified
-        [Command("userinfo")]
+        //[Command("userinfo")]
         public async Task UserInfoAsync(IUser user = null)
         {
             user = user ?? Context.User;
@@ -68,9 +73,14 @@ namespace Modules
             await ReplyAsync(user.ToString());
         }
 
-        // Ban a user
+        /// <summary>
+        ///   Ban a user;
+        ///   This method demonstrated how to use method attributes 
+        ///   to configure command, and how input parameters can 
+        ///   be setted for reflection. 
+        /// </summary>
+      
         //[Command("ban")]
-
         [RequireContext(ContextType.Guild)]
         // make sure the user invoking the command can ban
         [RequireUserPermission(GuildPermission.BanMembers)]
@@ -85,7 +95,7 @@ namespace Modules
         
         
         // [Remainder] takes the rest of the command's arguments as one argument, rather than splitting every space
-        [Command("echo")]
+        //[Command("echo")]
         public Task EchoAsync([Remainder] string text)
             // Insert a ZWSP before the text to prevent triggering other bots!
             => ReplyAsync('\u200B' + text);
@@ -107,7 +117,10 @@ namespace Modules
         [Command("math")]
         public Task MathAsync(params string[] objects)
         {
-        
+            string UserSpeaking = new MessageContextBridge(Context).NameOfUserSpeaking();
+
+            string formattedouput = "Hi! "+UserSpeaking+" Here is my take on this: \n";
+
             Interpretor[] replies = new Interpretor[objects.Length];
 
             for(int i =0; i< objects.Length; i++)
@@ -115,7 +128,7 @@ namespace Modules
                 replies[i] = new Interpretor(objects[i]);
             }
 
-            string formattedouput = "";
+           
 
             foreach (Interpretor itp in replies)
             {
@@ -132,7 +145,12 @@ namespace Modules
             return ReplyAsync(formattedouput);
         }
 
-        // Setting a custom ErrorMessage property will help clarify the precondition error
+        /// <summary>
+        /// Setting a custom ErrorMessage property will help clarify the precondition error, 
+        /// This method demonstrates how to make a context specific commands 
+        /// configuration. 
+        /// </summary>
+        
         [Command("guild_only")]
         [RequireContext(ContextType.Guild, ErrorMessage = "Sorry, this command must be ran from within a server, not a DM!")]
         public Task GuildOnlyCommand()
