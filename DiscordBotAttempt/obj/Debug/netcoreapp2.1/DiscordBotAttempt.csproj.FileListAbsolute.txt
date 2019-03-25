@@ -1,0 +1,11 @@
+C:\Users\victo\OneDrive - UW\My CSharp Project\DiscordBotAttempt\DiscordBotAttempt\bin\Debug\netcoreapp2.1\DiscordBotAttempt.deps.json
+C:\Users\victo\OneDrive - UW\My CSharp Project\DiscordBotAttempt\DiscordBotAttempt\bin\Debug\netcoreapp2.1\DiscordBotAttempt.runtimeconfig.json
+C:\Users\victo\OneDrive - UW\My CSharp Project\DiscordBotAttempt\DiscordBotAttempt\bin\Debug\netcoreapp2.1\DiscordBotAttempt.runtimeconfig.dev.json
+C:\Users\victo\OneDrive - UW\My CSharp Project\DiscordBotAttempt\DiscordBotAttempt\bin\Debug\netcoreapp2.1\DiscordBotAttempt.dll
+C:\Users\victo\OneDrive - UW\My CSharp Project\DiscordBotAttempt\DiscordBotAttempt\obj\Debug\netcoreapp2.1\DiscordBotAttempt.csprojAssemblyReference.cache
+C:\Users\victo\OneDrive - UW\My CSharp Project\DiscordBotAttempt\DiscordBotAttempt\obj\Debug\netcoreapp2.1\DiscordBotAttempt.csproj.CoreCompileInputs.cache
+C:\Users\victo\OneDrive - UW\My CSharp Project\DiscordBotAttempt\DiscordBotAttempt\obj\Debug\netcoreapp2.1\DiscordBotAttempt.AssemblyInfoInputs.cache
+C:\Users\victo\OneDrive - UW\My CSharp Project\DiscordBotAttempt\DiscordBotAttempt\obj\Debug\netcoreapp2.1\DiscordBotAttempt.AssemblyInfo.cs
+C:\Users\victo\OneDrive - UW\My CSharp Project\DiscordBotAttempt\DiscordBotAttempt\bin\Debug\netcoreapp2.1\DiscordBotAttempt.pdb
+C:\Users\victo\OneDrive - UW\My CSharp Project\DiscordBotAttempt\DiscordBotAttempt\obj\Debug\netcoreapp2.1\DiscordBotAttempt.dll
+C:\Users\victo\OneDrive - UW\My CSharp Project\DiscordBotAttempt\DiscordBotAttempt\obj\Debug\netcoreapp2.1\DiscordBotAttempt.pdb
