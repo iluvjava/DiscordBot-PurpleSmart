@@ -7,6 +7,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 
 using Utilities;
+using static Modules.MessageContext;
 
 namespace Services
 {
@@ -72,11 +73,19 @@ namespace Services
             // (!message.HasCharPrefix('!', ref argPos))
             // for a more traditional command format like !help.
             //if (!message.HasStringPrefix("!", ref argPos)) return;
+            var context = new SocketCommandContext(_discord, message);
+            
+           
+            //if bot is mentioned. 
+            RawMessageContextBridge rmcb = new RawMessageContextBridge(rawMessage,context);
+            bool BotIsMentioned = rmcb.BotIsMentioned();
+            if (BotIsMentioned)
+            {
+                Utilities.Stuff.ConsoleLog("Bot is mentioned.");
+                rmcb.sendMessageToChannel("Use >>>help for more info.");
+            }
 
             if (!message.HasStringPrefix(">>>", ref argPos)) return;
-
-            var context = new SocketCommandContext(_discord, message);
-
             // Perform the execution of the command. In this method,
             // the command service will perform precondition and parsing check
             // then execute the command if one is matched.

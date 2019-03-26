@@ -244,6 +244,8 @@ namespace Modules
             return null;
         }
 
+        //A method that get dm channel from the user? 
+
 
         /// <summary>
         /// This class is more comprehensive version of the 
@@ -253,13 +255,34 @@ namespace Modules
         /// </summary>
         public class RawMessageContextBridge :MessageContext
         {
+
             SocketMessage _rawmessage { get; set; }
+            //The text content of the message. 
+            protected string messagetext; 
 
             public RawMessageContextBridge(SocketMessage rawmessage, ICommandContext commandmessage) : base(commandmessage)
             {
 
 
             }
+
+            /// <summary>
+            /// This method will try to send a string message to the channel 
+            /// where the rawmessage is received. 
+            /// </summary>
+            /// <param name="arg"></param>
+            public void sendMessageToChannel(string arg)
+            {
+
+                SocketTextChannel stc = this.getSocketTextChannel();
+                Action act = () =>
+                {
+                    stc.SendMessageAsync(arg);
+                };
+                Task t = new Task(act);
+                t.Start();
+            }
+
 
 
 
