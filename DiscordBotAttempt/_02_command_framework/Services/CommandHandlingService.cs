@@ -66,13 +66,14 @@ namespace Services
             if (message.Source != MessageSource.User) return;
 
             // This value holds the offset where the prefix ends
-            var argPos = 0;
+            var argPos = 2;// 0;
 
             // Perform prefix check. You may want to replace this with
             // (!message.HasCharPrefix('!', ref argPos))
             // for a more traditional command format like !help.
-            if (!message.HasStringPrefix("!", ref argPos)) return;
+            //if (!message.HasStringPrefix("!", ref argPos)) return;
 
+            if (!message.HasStringPrefix(">>>", ref argPos)) return;
 
             var context = new SocketCommandContext(_discord, message);
 

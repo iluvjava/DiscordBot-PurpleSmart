@@ -1,10 +1,12 @@
-﻿using Discord.Commands;
-using DiscordBotAttempt._02_command_framework.Modules;
+﻿
+using Modules;
 using MathyStuff;
 using System;
 using System.Collections.Generic;
+
+using Discord;
+using Discord.Commands;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Services
 {
@@ -32,19 +34,22 @@ namespace Services
         
     }
 
-    #region Command math
+    #region math Command
     /// <summary>
     /// This is the math command we want to focus on. 
     /// </summary>
     /// 
     public class TheMathCommand : ICommandHandles
     {
-        protected MessageContextBridge Context;
+        const string HELPTIPS = null; 
 
-        public TheMathCommand(MessageContextBridge arg)
+        protected MessageContext Context;
+
+        public TheMathCommand(MessageContext arg)
         {
             this.Context = arg; 
         }
+
 
         public string getReply()
         {
@@ -96,10 +101,10 @@ namespace Services
                 {
                     formattedouput
                         +=
-                    "\"" + itp.inputexpression + "\""
+                    "```" + itp.inputexpression + "```"
                     +
                         "Is not a valid expression\n"
-                    +itp.outputresult + "\n";
+                    + itp.outputresult + "\n";
                     continue;
                 }
                 formattedouput +=
@@ -112,14 +117,204 @@ namespace Services
                   "\n";
             }
 
-            Console.WriteLine("This is the bot output: ");
-            Console.WriteLine(formattedouput);
-
+            Utilities.Stuff.ConsoleLog("This is the bot output: ");
+            Utilities.Stuff.ConsoleLog(formattedouput);
             return formattedouput;
         }
+
+        /// <summary>
+        /// A static method that return a string, which will be used to 
+        /// display to the user to show the usage of the command. s
+        /// </summary>
+        /// <returns></returns>
+        public static string getHelpTips()
+        {
+            string formattedreply = CommandConstant.HELPSTRING;
+            Random rd = new Random();
+            Interpretor temp = new Interpretor(CommandConstant.EXAMPLES[rd.Next(2)]);
+            formattedreply += "Your Input: \"" + temp.inputexpression + "\"+\n";
+            formattedreply += "The Output will be: " + temp.outputresult;
+            return formattedreply;
+        }
+
+
     }
 
     #endregion
 
+    #region intro command
 
+    public class TheIntroCommand : ICommandHandles
+    {
+        protected MessageContext Context;
+        protected string NameOfUserSpeakingTo;
+        protected string UserAvataID;
+
+        protected string OwnerOfTheServer;
+        string ChannelName;
+        string ServerName; 
+        IEnumerable<GuildEmote> Emotes;
+       
+        DateTimeOffset ServerTimeStamp; 
+
+        public TheIntroCommand(MessageContext arg)
+        {
+            
+            this.Context = arg;
+            NameOfUserSpeakingTo = Context.NameOfUserSpeaking();
+            if (!Context.isInServer()) return;
+
+            OwnerOfTheServer = Context.getServerOwner();
+            Emotes = Context.getAllEmote();
+            IChannel imc =Context.getCurrentChannel();
+            ChannelName = imc.Name;
+            ServerTimeStamp = Context.getGuildTimeStamp();
+            UserAvataID = Context.getUserSpeakingWith().AvatarId;
+            ServerName = Context.getServerName();
+        }
+
+
+        /// <summary>
+        /// Internal method that return a string full of emote. 
+        /// </summary>
+        /// <returns></returns>
+        protected string getAllEmotesStr()
+        {
+            string res = ""; 
+            IEnumerator<GuildEmote> em = Emotes.GetEnumerator();
+
+            while (em.MoveNext())
+            {
+
+                string ge = " <:"+em.Current.Name+":"+em.Current.Id+"> ";
+                res += ge;
+            }
+            return res; 
+        }
+
+        /// <summary>
+        /// Internal method, for structuring the reply. 
+        /// </summary>
+        /// <returns></returns>
+        protected string getServerLifeTime()
+        {
+            string res = "";
+            DateTime dt = this.ServerTimeStamp.DateTime;
+            res += "Date: "+dt.ToString()+" | ";
+            res += "Ticks: " + dt.Ticks;
+            return res; 
+        }
+
+        /// <summary>
+        /// Reply for command intro
+        /// </summary>
+        /// <returns></returns>
+        public string getReply()
+        {
+            //check is it a dm or a guild
+            string reply = "Hi,"+this.NameOfUserSpeakingTo +"\n";
+
+            Utilities.Stuff.ConsoleLog(this.Context._subject.Channel.Name);
+
+            if (!this.Context.isInServer())
+            {
+                reply += "I am Twilight Sparkle, they call me purple smart.";
+                return reply;
+            };
+
+            string allEmoteStr = this.getAllEmotesStr();
+
+            reply += "I am happy to introduce myself in the " +this.ChannelName+ " Channel.\n";
+            reply += "I am purple smart and my real name is Twilight Sparkle.\n";
+            reply += "The owner of the server "+this.ServerName+" is: " + this.OwnerOfTheServer +" and I believe " +
+                (this.NameOfUserSpeakingTo == this.OwnerOfTheServer?"you":"she/him") +
+                " is very nice\n";
+            if (allEmoteStr.Length != 0)
+            {
+                reply += "Whoa, are emotes in the server!\n";
+                reply += allEmoteStr + " \n";
+            }
+
+            reply += "There server has TimeStamp: " + this.getServerLifeTime()+"\n";
+
+            Utilities.Stuff.ConsoleLog(reply);
+
+            return reply;
+        }
+
+        /// <summary>
+        /// A static method that return a string, which will be used to 
+        /// display to the user to show the usage of the command. s
+        /// </summary>
+        /// <returns>
+        /// A string for the user, empty string the current command 
+        /// context if not server, or the arg is null. 
+        /// </returns>
+        public static string getHelpTips(MessageContext mcb)
+        {
+
+            if (mcb == null ||!mcb.isInServer()) return "" ;
+
+            string result = "Try "+CommandConstant.COMPREFIX+"intro command to see what the bot can say about this server! \n";
+
+            return result; 
+        }
+
+    }
+    #endregion
+
+    #region help command
+    /// <summary>
+    /// A class for the execution of TheHelp Command
+    /// The class can be instantiated with A contextbridge
+    /// to provide context to other command class in the name space. 
+    /// </summary>
+    public class TheHelpCommand : ICommandHandles
+    {
+
+        MessageContext Context; 
+
+        /// <summary>
+        /// Contruct the command, it might use mcb or it might not. 
+        /// if the context if null
+        /// </summary>
+        /// <param name="mcb"></param>
+        public TheHelpCommand(MessageContext mcb =null)
+        {
+            this.Context = mcb; 
+        }
+
+
+        public string getReply()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(TheMathCommand.getHelpTips());
+            sb.Append("\n");
+            sb.Append(TheIntroCommand.getHelpTips(this.Context));
+            return sb.ToString();
+        }
+
+
+    }
+    #endregion
+
+
+
+    /// <summary>
+    /// May be an enum class is better? 
+    /// </summary>
+    public class CommandConstant
+    {
+        public const string COMPREFIX = ">>>"; 
+        public const string HELPSTRING =
+            "Use "+COMPREFIX+"math command to solve integer arithmatic.\n"
+            +
+            "Here is an example: "
+            ;
+
+        
+
+
+        public static readonly string[] EXAMPLES = { "2+9/5-5*(334/45)", "333/452+3/(5*88-6)" };
+    }
 }

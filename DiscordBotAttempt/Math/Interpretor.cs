@@ -47,7 +47,8 @@ namespace MathyStuff
 
                 //Evaluate the post fix and out put. 
                 outputresult = evaluatePostFix(postfix).ToString();
-                Console.WriteLine(outputresult);
+
+                Utilities.Stuff.ConsoleLog(outputresult);
 
                 ErrorOccured = false; 
             }
@@ -67,10 +68,10 @@ namespace MathyStuff
                 else
                 {
                     this.outputresult = "Some Unknow error Occured...";
-                    Console.WriteLine(e.ToString());
-                    Console.WriteLine(e.HelpLink);
-                    Console.WriteLine(e.Message);
-                    Console.WriteLine(e.StackTrace.ToString());
+                    Utilities.Stuff.ConsoleLog(e.ToString());
+                    Utilities.Stuff.ConsoleLog(e.HelpLink);
+                    Utilities.Stuff.ConsoleLog(e.Message);
+                    Utilities.Stuff.ConsoleLog(e.StackTrace.ToString());
                 }
             }
 

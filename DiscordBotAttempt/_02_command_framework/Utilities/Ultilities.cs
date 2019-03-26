@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Utilities
 {
@@ -8,11 +9,14 @@ namespace Utilities
     /// <summary>
     /// This contains console loging. 
     /// </summary>
-    public class Utilities
+    public class Stuff
     {
+
         public static void ConsoleLog(Object o)
         {
-            Console.WriteLine(o.ToString());
+            Action<object> print = (object arg)=>{Console.WriteLine(arg);};
+            Task t = new Task(print,o);
+            t.Start();
         }
 
 

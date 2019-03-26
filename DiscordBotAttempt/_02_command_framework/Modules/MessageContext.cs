@@ -1,11 +1,12 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscordBotAttempt._02_command_framework.Modules
+namespace Modules
 {
 
     /// <summary>
@@ -13,9 +14,9 @@ namespace DiscordBotAttempt._02_command_framework.Modules
     /// in the command context. 
     /// 
     /// </summary>
-   public class MessageContextBridge
+   public class MessageContext
    {
-        protected ICommandContext _subject;
+        public ICommandContext _subject { get; set; }
 
         protected ulong _botID;
 
@@ -28,7 +29,7 @@ namespace DiscordBotAttempt._02_command_framework.Modules
         /// </summary>
         /// <param name="arg"></param>
         /// <param name="Userinputs"></param>
-        public MessageContextBridge(ICommandContext commandcontext, string[] Userinputs = null)
+        public MessageContext(ICommandContext commandcontext, string[] Userinputs = null)
         {
             this.userInputs= Userinputs;
             _subject = commandcontext ?? throw new Exception("Null Command Context."); 
@@ -42,7 +43,7 @@ namespace DiscordBotAttempt._02_command_framework.Modules
         /// </summary>
         /// <param name="arg"></param>
         /// <param name="Userinputs"></param>
-        public MessageContextBridge(ICommandContext arg, string userinput) :this(arg)
+        public MessageContext(ICommandContext arg, string userinput) :this(arg)
         {
             string[] temp = new string[1];
             temp[1] = userinput;
@@ -121,7 +122,8 @@ namespace DiscordBotAttempt._02_command_framework.Modules
             return _subject.User.Username;
         }
         /// <summary>
-        /// Get Iuser of the user speaking to. 
+        /// Get Iuser of the user speaking to, could be from dm
+        /// could be from server. 
         /// </summary>
         /// <returns></returns>
         public IUser getUserSpeakingWith()
@@ -176,6 +178,93 @@ namespace DiscordBotAttempt._02_command_framework.Modules
             }
             return false; 
         }
+
+
+        /// <summary>
+        /// Return an IMessage Channel extracted from the chat context. 
+        /// </summary>
+        /// <returns></returns>
+        public IMessageChannel getCurrentChannel()
+        {
+            IMessageChannel imc =this._subject.Channel;
+            return imc; 
+        }
+
+
+        /// <summary>
+        /// Return A SoketTextChannel Object if the current 
+        /// channel the context is on is an instance of SocketTextChannel. 
+        /// </summary>
+        /// <returns>
+        /// A Socket TextChanell object in instance, null if the 
+        /// current IMessage Channel cannot be cast to 
+        /// SocketTextChannel. 
+        /// </returns>
+        public SocketTextChannel getSocketTextChannel()
+        {
+            if (this.getCurrentChannel() is SocketTextChannel)
+            {
+                return this.getCurrentChannel() as SocketTextChannel;
+            }
+            return null;
+        }
+
+
+        /// <summary>
+        /// Return a DateTimOffset object, which is 
+        /// a unique identifier for the server. 
+        /// </summary>
+        /// <returns></returns>
+        public DateTimeOffset getGuildTimeStamp()
+        {
+           ISnowflakeEntity sfid =  this._subject.Guild;
+            DateTimeOffset timestamp = sfid.CreatedAt;
+            return timestamp;
+        }
+
+        /// <summary>
+        /// True if the command is executed in a server, false if it's not. 
+        /// </summary>
+        /// <returns></returns>
+        public bool isInServer()
+        {
+            return _subject.Guild != null;
+        }
+
+        /// <summary>
+        /// Return the name of the server
+        /// </summary>
+        /// <returns>
+        /// null if the current command is not identified in a server 
+        /// context.
+        /// </returns>
+        public string getServerName()
+        {
+            if (isInServer()) return this._subject.Guild.Name;
+            return null;
+        }
+
+
+        /// <summary>
+        /// This class is more comprehensive version of the 
+        /// class above, it requires more context, and 
+        /// it should be used when we have both the raw message 
+        /// and has constructed our command context. 
+        /// </summary>
+        public class RawMessageContextBridge :MessageContext
+        {
+            SocketMessage _rawmessage { get; set; }
+
+            public RawMessageContextBridge(SocketMessage rawmessage, ICommandContext commandmessage) : base(commandmessage)
+            {
+
+
+            }
+
+
+
+        }
+
 
     }
 }

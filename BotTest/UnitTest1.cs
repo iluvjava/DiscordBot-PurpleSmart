@@ -19,8 +19,8 @@ namespace Tests
         [Test]
         public void test1()
         {
-           string s =  Utilities.Utilities.GetBotToken();
-            Utilities.Utilities.ConsoleLog(s);
+           string s =  Utilities.Stuff.GetBotToken();
+            Utilities.Stuff.ConsoleLog(s);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Text;
 /// Settings for different server, or even different users if one day I manage 
 /// to go that far.
 /// </summary>
-namespace DiscordBotAttempt._02_command_framework.Modules
+namespace Modules
 {
     class BotItself
     {

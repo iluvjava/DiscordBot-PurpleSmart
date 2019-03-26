@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using DiscordBotAttempt._02_command_framework.Modules;
+using Modules;
 using MathyStuff;
 using Services;
 using Utilities;
@@ -34,25 +34,6 @@ namespace Modules
         public PictureService PictureService { get; set; }
 
 
-        /// <summary>
-        /// This is an example of a method that does hase any input parameter,
-        /// it means the bot is going to do something when the 
-        /// commands appeared at the discord channel. 
-        /// </summary>
-        /// <returns>
-        /// 
-        /// </returns>
-        [Command("help")]
-        [Alias("Help", "HELP")]
-        public async Task PingAsync()
-        {
-            string formattedreply = CommandConstant.HELPSTRING;
-            Random rd = new Random();
-            Interpretor temp = new Interpretor(CommandConstant.EXAMPLES[rd.Next(2)]);
-            formattedreply += "Your Input: \""+temp.inputexpression+"\"+\n";
-            formattedreply += "The Output will be: " + temp.outputresult;
-            await ReplyAsync(formattedreply);
-        }
 
         //[Command("cat")]
         public async Task CatAsync()
@@ -92,7 +73,15 @@ namespace Modules
             await ReplyAsync("ok!");
         }
 
-        
+        [Command("intro")]
+        [Alias("Intro","introduce")]
+        public async Task Introduce()
+        {
+            Utilities.Stuff.ConsoleLog("intro command is triggered...");
+            ICommandHandles ch = new TheIntroCommand(new MessageContext(this.Context));
+            await ReplyAsync(ch.getReply());
+        }
+
         
         // [Remainder] takes the rest of the command's arguments as one argument, rather than splitting every space
         //[Command("echo")]
@@ -119,7 +108,7 @@ namespace Modules
         {
             Console.WriteLine("MathAsync Triggered, Context Object: " + this.Context.ToString());
 
-            ICommandHandles A_MathCommand = new TheMathCommand(new MessageContextBridge(this.Context , objects));
+            ICommandHandles A_MathCommand = new TheMathCommand(new MessageContext(this.Context , objects));
 
             return ReplyAsync(A_MathCommand.getReply());
         }
@@ -138,16 +127,39 @@ namespace Modules
 
 
     /// <summary>
-    /// May be an enum class is better? 
+    /// Create another class that inheritate the ModuleBass Class. 
     /// </summary>
-    public class CommandConstant
+    public class MorePublicModule : ModuleBase<SocketCommandContext>
     {
 
-        public const string HELPSTRING =
-            "Use !math command to solve integer arithmatic.\n"
-            +
-            "Here is an example: "
-            ;
-        public static readonly string[] EXAMPLES ={"2+9/5-5*(334/45)","333/452+3/(5*88-6)"};
+
+        /// <summary>
+        /// This is an example of a method that does hase any input parameter,
+        /// it means the bot is going to do something when the 
+        /// commands appeared at the discord channel. 
+        /// </summary>
+        /// <returns>
+        /// 
+        /// </returns>
+        [Command("help")]
+        [Alias("Help", "HELP")]
+        public async Task PingAsync()
+        {
+            ICommandHandles ich = new TheHelpCommand(new MessageContext(this.Context));
+
+            string formattedreply = ich.getReply();
+
+            await ReplyAsync(formattedreply);
+        }
     }
+
+
+
+    
+
+
+
+
+
+
 }
