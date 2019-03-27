@@ -1,6 +1,8 @@
 cd %cd%
+git status
 pause
 git add .
-git commit -m "Batch commit"
+SET stamp=%RANDOM%BatchCommit
+git commit -m %stamp%
 git push
 pause
