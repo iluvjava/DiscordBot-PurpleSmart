@@ -243,59 +243,75 @@ namespace Modules
             if (isInServer()) return this._subject.Guild.Name;
             return null;
         }
-
-        //A method that get dm channel from the user? 
-
-
+        
         /// <summary>
-        /// This class is more comprehensive version of the 
-        /// class above, it requires more context, and 
-        /// it should be used when we have both the raw message 
-        /// and has constructed our command context. 
+        /// A method that send a DM to the user who is 
+        /// in the context. 
         /// </summary>
-        public class RawMessageContextBridge :MessageContext
+        /// <param name="message">
+        /// 
+        /// </param>
+        public void DM(string message)
         {
-            //The rawmessage object. 
-            SocketMessage _rawmessage { get; set; }
-            //The text content of the message. 
-            protected string messagetext; 
-
-            /// <summary>
-            /// Contruct a RawMessageContextBridge with two kinds of 
-            /// message context, the command and the rawmessage context. 
-            /// </summary>
-            /// <param name="rawmessage"></param>
-            /// <param name="commandmessage"></param>
-            public RawMessageContextBridge(SocketMessage rawmessage, ICommandContext commandmessage) : base(commandmessage)
-            {
-
-                this._rawmessage = rawmessage;
-                this.messagetext = this._rawmessage.Content;
-            }
-
-            /// <summary>
-            /// This method will try to send a string message to the channel 
-            /// where the rawmessage is received. 
-            /// </summary>
-            /// <param name="arg"></param>
-            public void sendMessageToChannel(string arg)
-            {
-                SocketTextChannel stc = this.getSocketTextChannel();
-                Action act = () =>
-                {
-                    stc.SendMessageAsync(arg);
-                };
-                Task t = new Task(act);
-                t.Start();
-            }
-
-
-
-
-
-
+            this._subject.User.SendMessageAsync(message);
         }
 
+        /// <summary>
+        /// Mention the user in this particular context. 
+        /// If it's not in a guild, then this method does nothing. 
+        /// </summary>
+        public void MentionUser()
+        {
+            if (!this.isInServer()) return;
+            string m = this._subject.User.Mention;
+            this.sendMessageToThisChannel(m);
+        }
+
+        /// <summary>
+        /// This method will try to send a string message to the channel 
+        /// where the rawmessage is received. 
+        /// </summary>
+        /// <param name="arg"></param>
+        public void sendMessageToThisChannel(string arg)
+        {
+            SocketTextChannel stc = this.getSocketTextChannel();
+            Action act = () =>
+            {
+                stc.SendMessageAsync(arg);
+            };
+            Task t = new Task(act);
+            t.Start();
+        }
+
+    }  
+    /// <summary>
+    /// This class is more comprehensive version of the 
+    /// class above, it requires more context, and 
+    /// it should be used when we have both the raw message 
+    /// and has constructed our command context. 
+    /// </summary>
+    public class RawMessageContextBridge :MessageContext
+    {
+        //The rawmessage object. 
+        SocketMessage _rawmessage { get; set; }
+        //The text content of the message. 
+        protected string messagetext; 
+
+        /// <summary>
+        /// Contruct a RawMessageContextBridge with two kinds of 
+        /// message context, the command and the rawmessage context. 
+        /// </summary>
+        /// <param name="rawmessage"></param>
+        /// <param name="commandmessage"></param>
+        public RawMessageContextBridge(SocketMessage rawmessage, ICommandContext commandmessage) : base(commandmessage)
+        {
+
+            this._rawmessage = rawmessage;
+            this.messagetext = this._rawmessage.Content;
+        }
+
+            
 
     }
+
 }

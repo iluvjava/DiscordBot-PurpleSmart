@@ -7,7 +7,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 
 using Utilities;
-using static Modules.MessageContext;
+using Modules;
 
 namespace Services
 {
@@ -82,7 +82,7 @@ namespace Services
             if (BotIsMentioned)
             {
                 Utilities.Stuff.ConsoleLog("Bot is mentioned.");
-                rmcb.sendMessageToChannel("Use >>>help for more info.");
+                rmcb.sendMessageToThisChannel("Use >>>help for more info.");
             }
 
             if (!message.HasStringPrefix(">>>", ref argPos)) return;

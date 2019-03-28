@@ -30,10 +30,6 @@ namespace Modules
             this.IDcard = new MyEntity(server.Name,temp.Id);
         }
 
-
-
-      
-
     }
 
     /// <summary>

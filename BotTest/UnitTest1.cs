@@ -37,9 +37,10 @@ namespace Tests
             alist.Add("Second element. ");
             string dir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
+            dir = "";
             ObjectCache<List<string>> storelist =new ObjectCache<List<string>>(alist,dir,"alist.txt");
 
-            //Utilities.Stuff.ConsoleLog("Storing list, bool: "+storelist.serialize());
+            Utilities.Stuff.ConsoleLog("Storing list, bool: "+storelist.serialize());
             Utilities.Stuff.ConsoleLog("Reading status: "+storelist.deserialize());
 
             alist = storelist.ObjectToStore;

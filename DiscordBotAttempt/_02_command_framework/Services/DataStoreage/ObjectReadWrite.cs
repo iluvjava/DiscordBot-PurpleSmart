@@ -42,16 +42,12 @@ namespace Services.DataStoreage
         /// </param>
         public ObjectCache(T stuff, string dir, string filename, bool overwrite = true)
         {
-            if (!Directory.Exists(dir)) throw new Exception("Dir DNE. ");
+            if (!(Directory.Exists(dir)||dir=="")) throw new Exception("Dir DNE. ");
             ObjectToStore = stuff;
             FileLocation = dir;
             FileName = filename;
             this.OverWrite = overwrite;
         }
-        
-
-
-
 
         /// <summary>
         /// Store the object onto the harddisk, XML format. 
@@ -70,7 +66,11 @@ namespace Services.DataStoreage
             try
             {
                 var serializer = new XmlSerializer(typeof(T));
-                writer = new StreamWriter(this.FileLocation+@"\"+this.FileName, this.OverWrite);
+
+                //Handle direct relative path. 
+                string temp = this.FileLocation==""?"":@"\";
+
+                writer = new StreamWriter(this.FileLocation+temp+this.FileName, this.OverWrite);
                 serializer.Serialize(writer, this.ObjectToStore);
             }
             catch (Exception exc)
@@ -106,9 +106,11 @@ namespace Services.DataStoreage
             TextReader reader = null;
             try
             {
-                
                 var serializer = new XmlSerializer(typeof(T));
-                reader = new StreamReader(FileLocation+@"\"+FileName);
+
+                //Handle direct relative path. 
+                string temp = this.FileLocation == "" ? "" : @"\";
+                reader = new StreamReader(FileLocation+temp+FileName);
                 if (this.OverWrite) this.ObjectToStore = (T)serializer.Deserialize(reader);
             }
             catch (Exception e)
