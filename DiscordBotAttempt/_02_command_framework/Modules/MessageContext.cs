@@ -255,15 +255,22 @@ namespace Modules
         /// </summary>
         public class RawMessageContextBridge :MessageContext
         {
-
+            //The rawmessage object. 
             SocketMessage _rawmessage { get; set; }
             //The text content of the message. 
             protected string messagetext; 
 
+            /// <summary>
+            /// Contruct a RawMessageContextBridge with two kinds of 
+            /// message context, the command and the rawmessage context. 
+            /// </summary>
+            /// <param name="rawmessage"></param>
+            /// <param name="commandmessage"></param>
             public RawMessageContextBridge(SocketMessage rawmessage, ICommandContext commandmessage) : base(commandmessage)
             {
 
-
+                this._rawmessage = rawmessage;
+                this.messagetext = this._rawmessage.Content;
             }
 
             /// <summary>
@@ -273,7 +280,6 @@ namespace Modules
             /// <param name="arg"></param>
             public void sendMessageToChannel(string arg)
             {
-
                 SocketTextChannel stc = this.getSocketTextChannel();
                 Action act = () =>
                 {
@@ -282,6 +288,8 @@ namespace Modules
                 Task t = new Task(act);
                 t.Start();
             }
+
+
 
 
 
