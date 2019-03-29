@@ -151,6 +151,24 @@ namespace Modules
 
             await ReplyAsync(formattedreply);
         }
+
+
+        /// <summary>
+        /// Set command prefix for a particular server. 
+        /// </summary>
+        /// <param name="objects"></param>
+        /// <returns></returns>
+        [Command("prefix")]
+        [RequireUserPermission(GuildPermission.ManageGuild,ErrorMessage = "You don't have the permission to set command prefix. ")]
+        public async Task SetPrefix(params string[] objects)
+        {
+            ICommandHandles temp = new PrefixCommand(new MessageContext(this.Context,objects));
+
+            await ReplyAsync(temp.getReply());
+
+        }
+        
+
     }
 
 

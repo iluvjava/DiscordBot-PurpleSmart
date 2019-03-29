@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfServer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Server>
+    <IDcard>
+      <ID>1234567890</ID>
+      <Name>Dummy</Name>
+    </IDcard>
+    <commandprefix>&gt;&gt;&gt;</commandprefix>
+  </Server>
+</ArrayOfServer>

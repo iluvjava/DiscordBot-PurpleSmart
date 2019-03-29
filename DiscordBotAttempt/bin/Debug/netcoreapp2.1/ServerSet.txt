@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfServer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Server>
+    <IDcard>
+      <ID>557396013082607659</ID>
+      <Name>My Bot Factory</Name>
+    </IDcard>
+    <commandprefix>$</commandprefix>
+  </Server>
+  <Server>
+    <IDcard>
+      <ID>432371096768086017</ID>
+      <Name>UW: Friendship is Boundless</Name>
+    </IDcard>
+    <commandprefix>&gt;&gt;&gt;</commandprefix>
+  </Server>
+</ArrayOfServer>

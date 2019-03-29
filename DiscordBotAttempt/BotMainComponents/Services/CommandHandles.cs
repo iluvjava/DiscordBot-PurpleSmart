@@ -127,9 +127,12 @@ namespace Services
         /// display to the user to show the usage of the command. s
         /// </summary>
         /// <returns></returns>
-        public static string getHelpTips()
+        public static string getHelpTips(MessageContext mc)
         {
-            string formattedreply = CommandConstant.HELPSTRING;
+
+            string formattedreply = "Use: **" + Manager.GetServerCommandPrefix(mc)+"math** to give " +
+                "me a math problem, here is an example: \n";
+
             Random rd = new Random();
             Interpretor temp = new Interpretor(CommandConstant.EXAMPLES[rd.Next(2)]);
             formattedreply += "Your Input: \"" + temp.inputexpression + "\"+\n";
@@ -227,8 +230,8 @@ namespace Services
             reply += "I am happy to introduce myself in the " +this.ChannelName+ " Channel.\n";
             reply += "I am purple smart and my real name is Twilight Sparkle.\n";
             reply += "The owner of the server "+this.ServerName+" is: " + this.OwnerOfTheServer +" and I believe " +
-                (this.NameOfUserSpeakingTo == this.OwnerOfTheServer?"you":"she/him") +
-                " is very nice\n";
+                (this.NameOfUserSpeakingTo == this.OwnerOfTheServer?"you":"they") +
+                " are very nice\n";
             if (allEmoteStr.Length != 0)
             {
                 reply += "Whoa, are emotes in the server!\n";
@@ -236,6 +239,9 @@ namespace Services
             }
 
             reply += "There server has TimeStamp: " + this.getServerLifeTime()+"\n";
+            reply += "The server has ID: " + this.Context.getServerID()+"\n" ;
+            reply += "The command prefix for this server is: \n";
+            reply += "```" + Manager.GetServerCommandPrefix(Context) + "```"; 
 
             Utilities.Stuff.ConsoleLog(reply);
 
@@ -255,7 +261,7 @@ namespace Services
 
             if (mcb == null ||!mcb.isInServer()) return "" ;
 
-            string result = "Try "+CommandConstant.COMPREFIX+"intro command to see what the bot can say about this server! \n";
+            string result = "Try "+Manager.GetServerCommandPrefix(mcb)+"intro command to see what the bot can say about this server! \n";
 
             return result; 
         }
@@ -275,11 +281,11 @@ namespace Services
         MessageContext Context; 
 
         /// <summary>
-        /// Contruct the command, it might use mcb or it might not. 
-        /// if the context if null
+        /// Contruct the command, please Provide a context 
+        /// for the command. 
         /// </summary>
         /// <param name="mcb"></param>
-        public TheHelpCommand(MessageContext mcb =null)
+        public TheHelpCommand(MessageContext mcb = null)
         {
             this.Context = mcb; 
         }
@@ -288,7 +294,7 @@ namespace Services
         public string getReply()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(TheMathCommand.getHelpTips());
+            sb.Append(TheMathCommand.getHelpTips(this.Context));
             sb.Append("\n");
             sb.Append(TheIntroCommand.getHelpTips(this.Context));
             return sb.ToString();
@@ -298,6 +304,68 @@ namespace Services
     }
     #endregion
 
+    #region prefix command
+    public class PrefixCommand : ICommandHandles
+    {
+        MessageContext Context;
+        /// <summary>
+        /// 
+        /// A message context with userinput (not RAW MESSAGE PLEASE)
+        /// is needed. 
+        /// </summary>
+        /// <param name="con"></param>
+        public PrefixCommand(MessageContext con)
+        {
+            this.Context = con ?? throw new Exception("You shouldn't do this. "); 
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>
+        /// A reply for this command. 
+        /// </returns>
+        public string getReply()
+        {
+            string[] userinput = Context.getUserInput();
+            if (userinput == null)
+                Utilities.Stuff.ConsoleLog("NOT GOOD! => Userinput is null if Prefixcommand getreplay method. ");
+
+            // If not in guild, the command shouldn't be envoked, hence guild check avoided. 
+
+            if (userinput.Length == 0||userinput[0]=="")
+                return "No parametered for your command, Command is ignored. ";
+
+            string newprefix = userinput[0];
+            setPrefix(newprefix);
+
+            string reply = "This is the new prefix: \n";
+            reply += "```" + newprefix + "```"; 
+
+            return reply; 
+        }
+
+        /// <summary>
+        /// Read server for the data base and store the command prefix for the server. 
+        /// </summary>
+        protected void setPrefix(string newprefix)
+        {
+            Server sev = new Server(Context._subject.Guild);
+            sev.commandprefix = newprefix;
+            Manager.AddServer(sev);
+        }
+
+
+
+        public static string getHelpTips(MessageContext arg)
+        {
+            if (arg == null) return ""; 
+            return ""; 
+        }
+    }
+
+    #endregion
 
 
     /// <summary>

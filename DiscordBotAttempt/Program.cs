@@ -8,7 +8,8 @@ using Discord.Commands;
 
 //The added services, from discord core. 
 using Services;
-
+using System.Threading;
+using Modules;
 
 ///
 /// 
@@ -66,9 +67,14 @@ namespace _02_commands_framework
                 // Here we initialize the logic required to register our commands.
                 await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
 
+                //Load the database. 
+                Manager.PrepareEverthing();
+
                 await Task.Delay(-1);
             }
         }
+
+      
 
         private Task LogAsync(LogMessage log)
         {
@@ -86,5 +92,9 @@ namespace _02_commands_framework
                 .AddSingleton<PictureService>()
                 .BuildServiceProvider();
         }
+
+
+
+
     }
 }

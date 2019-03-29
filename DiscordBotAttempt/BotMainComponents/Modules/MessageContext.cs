@@ -183,7 +183,9 @@ namespace Modules
         /// <summary>
         /// Return an IMessage Channel extracted from the chat context. 
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A interface of ImessageChannel.
+        /// </returns>
         public IMessageChannel getCurrentChannel()
         {
             IMessageChannel imc =this._subject.Channel;
@@ -283,6 +285,23 @@ namespace Modules
             t.Start();
         }
 
+
+        /// <summary>
+        /// Return the ID of the server. 
+        /// </summary>
+        /// <returns>
+        /// 0 current context is not server. 
+        /// </returns>
+        public ulong getServerID()
+        {
+            if (!isInServer()) return 0;
+            IEntity<ulong> ID = this._subject.Guild;
+            return ID.Id;
+        }
+        
+
+
+
     }  
     /// <summary>
     /// This class is more comprehensive version of the 
@@ -290,7 +309,7 @@ namespace Modules
     /// it should be used when we have both the raw message 
     /// and has constructed our command context. 
     /// </summary>
-    public class RawMessageContextBridge :MessageContext
+    public class RawMessageContext :MessageContext
     {
         //The rawmessage object. 
         SocketMessage _rawmessage { get; set; }
@@ -303,14 +322,14 @@ namespace Modules
         /// </summary>
         /// <param name="rawmessage"></param>
         /// <param name="commandmessage"></param>
-        public RawMessageContextBridge(SocketMessage rawmessage, ICommandContext commandmessage) : base(commandmessage)
+        public RawMessageContext(SocketMessage rawmessage, ICommandContext commandmessage) : base(commandmessage)
         {
-
             this._rawmessage = rawmessage;
             this.messagetext = this._rawmessage.Content;
         }
 
-            
+
+        
 
     }
 

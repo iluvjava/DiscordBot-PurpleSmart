@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace Services.DataStoreage
@@ -69,8 +66,8 @@ namespace Services.DataStoreage
 
                 //Handle direct relative path. 
                 string temp = this.FileLocation==""?"":@"\";
-
-                writer = new StreamWriter(this.FileLocation+temp+this.FileName, this.OverWrite);
+                                                                                //Never Append.  
+                writer = new StreamWriter(this.FileLocation+temp+this.FileName, false);
                 serializer.Serialize(writer, this.ObjectToStore);
             }
             catch (Exception exc)

@@ -66,26 +66,35 @@ namespace Services
 
             if (message.Source != MessageSource.User) return;
 
-            // This value holds the offset where the prefix ends
-            var argPos = 2;// 0;
+           
 
             // Perform prefix check. You may want to replace this with
             // (!message.HasCharPrefix('!', ref argPos))
             // for a more traditional command format like !help.
             //if (!message.HasStringPrefix("!", ref argPos)) return;
             var context = new SocketCommandContext(_discord, message);
-            
-           
-            //if bot is mentioned. 
-            RawMessageContextBridge rmcb = new RawMessageContextBridge(rawMessage,context);
+            RawMessageContext rmcb = new RawMessageContext(rawMessage,context);
+            MessageContext mc = new MessageContext(context);
+
+            string CommandPrefix = Manager.GetServerCommandPrefix
+                (
+                    mc
+                );
+
+            //if bot is mentioned.
             bool BotIsMentioned = rmcb.BotIsMentioned();
             if (BotIsMentioned)
             {
                 Utilities.Stuff.ConsoleLog("Bot is mentioned.");
-                rmcb.sendMessageToThisChannel("Use >>>help for more info.");
-            }
+                rmcb.sendMessageToThisChannel("Use"+CommandPrefix+"help for more info.");
+            } 
+            
+            
+            // This value holds the offset where the prefix ends
+            var argPos = CommandPrefix.Length-1;// 0;
 
-            if (!message.HasStringPrefix(">>>", ref argPos)) return;
+
+            if (!message.HasStringPrefix(CommandPrefix, ref argPos)) return;
             // Perform the execution of the command. In this method,
             // the command service will perform precondition and parsing check
             // then execute the command if one is matched.
@@ -123,8 +132,9 @@ namespace Services
                 return;
             }
 
+
             // the command failed, let's notify the user that something happened.
-            await context.Channel.SendMessageAsync($"error: {result}");
+            await context.Channel.SendMessageAsync();//$"error: {result}");
         }
     }
 }

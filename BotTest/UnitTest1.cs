@@ -2,6 +2,9 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using Services.DataStoreage;
 using System;
+using Modules;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Tests
 {
@@ -49,6 +52,33 @@ namespace Tests
                 Utilities.Stuff.ConsoleLog(str);
             }
 
+        }
+
+
+        [Test]
+        public void TestSeverandUser()
+        {
+
+            Manager m = new Manager();
+
+            // Get a dummy server first
+            Server sev = Server.CreateDummyServerForTesting();
+            Console.WriteLine("Dummy Server: " + sev.ToString());
+            Manager.ReadServers();
+
+            Console.WriteLine("SetSize: "+ Manager.ServerSet.Count);
+            Manager.ServerSet.Add(sev);
+
+            Task<bool> t = Manager.SaveServers();
+            Console.WriteLine(t.Result);
+
+            Thread.Sleep(2000);
+        }
+
+        [Test]
+        public void TestSeverandUserPart2()
+        {
+              
         }
     }
 }
