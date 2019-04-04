@@ -159,7 +159,8 @@ namespace Modules
         /// <param name="objects"></param>
         /// <returns></returns>
         [Command("prefix")]
-        [RequireUserPermission(GuildPermission.ManageGuild,ErrorMessage = "You don't have the permission to set command prefix. ")]
+        [RequireUserPermission
+        (GuildPermission.ManageGuild,ErrorMessage = "You don't have the permission to set command prefix. ")]
         public async Task SetPrefix(params string[] objects)
         {
             ICommandHandles temp = new PrefixCommand(new MessageContext(this.Context,objects));
@@ -167,7 +168,16 @@ namespace Modules
             await ReplyAsync(temp.getReply());
 
         }
+
+        [Command("eqdfeed")]
+        public async Task eqdfeed()
+        {
+            ReplyAsync("Command Not implemented yet.");
+            ReplyAsync("Command Not implemented yet.(I know this is the second message)");
+        }
         
+
+
 
     }
 

@@ -29,7 +29,14 @@ namespace Services
         /// <returns></returns>
         string getReply();
 
-        
+
+        /// <summary>
+        /// This return a lots of replies. Some Commands might implement this 
+        /// one instead of the other method. 
+        /// </summary>
+        /// <returns></returns>
+        IList<string> getReplies(); 
+
         
         
     }
@@ -140,7 +147,10 @@ namespace Services
             return formattedreply;
         }
 
-
+        public IList<string> getReplies()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     #endregion
@@ -266,6 +276,10 @@ namespace Services
             return result; 
         }
 
+        public IList<string> getReplies()
+        {
+            throw new NotImplementedException();
+        }
     }
     #endregion
 
@@ -290,6 +304,10 @@ namespace Services
             this.Context = mcb; 
         }
 
+        public IList<string> getReplies()
+        {
+            throw new NotImplementedException();
+        }
 
         public string getReply()
         {
@@ -297,6 +315,7 @@ namespace Services
             sb.Append(TheMathCommand.getHelpTips(this.Context));
             sb.Append("\n");
             sb.Append(TheIntroCommand.getHelpTips(this.Context));
+            sb.Append(PrefixCommand.getHelpTips(this.Context));
             return sb.ToString();
         }
 
@@ -360,8 +379,16 @@ namespace Services
 
         public static string getHelpTips(MessageContext arg)
         {
-            if (arg == null) return ""; 
-            return ""; 
+            //if not in guild context
+            if (!arg.isInServer()) return "";
+            string reply = 
+            "Use: **" + Manager.GetServerCommandPrefix(arg) + "prefix** to change prefix for the server.";
+            return reply; 
+        }
+
+        public IList<string> getReplies()
+        {
+            throw new NotImplementedException();
         }
     }
 
